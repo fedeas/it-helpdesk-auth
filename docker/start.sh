@@ -3,12 +3,15 @@ set -e
 
 cd /var/www/html
 
-php artisan key:generate --force || true
+mkdir -p storage/framework/cache
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+mkdir -p bootstrap/cache
 
-if [ -n "$DATABASE_URL" ]; then
-  echo "DATABASE_URL detected"
-fi
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 php artisan migrate --force || true
 
-apache2-foreground
+exec apache2-foreground
