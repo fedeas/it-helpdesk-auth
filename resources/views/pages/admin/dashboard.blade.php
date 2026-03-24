@@ -10,6 +10,7 @@ new class extends Component {
     public string $search = '';
     public string $openSort = 'created_desc';
     public string $closedSort = 'closed_desc';
+    public string $selectedStatusFilter = '';
 
     public function updatingSearch(): void
     {
@@ -27,11 +28,26 @@ new class extends Component {
         $this->resetPage(pageName: 'closedPage');
     }
 
+    public function toggleStatusFilter(string $status): void
+    {
+        $this->selectedStatusFilter = $this->selectedStatusFilter === $status ? '' : $status;
+        $this->resetPage(pageName: 'openPage');
+        $this->resetPage(pageName: 'closedPage');
+    }
+
+    public function clearStatusFilter(): void
+    {
+        $this->selectedStatusFilter = '';
+        $this->resetPage(pageName: 'openPage');
+        $this->resetPage(pageName: 'closedPage');
+    }
+
     protected function applySearch($query)
     {
         return $query->when($this->search !== '', function ($q) {
             $q->where(function ($sub) {
                 $sub->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('reference_number', 'like', '%'.$this->search.'%')
                     ->orWhereHas('customer', function ($customerQuery) {
                         $customerQuery->where('name', 'like', '%'.$this->search.'%')
                             ->orWhere('email', 'like', '%'.$this->search.'%');
@@ -66,6 +82,16 @@ new class extends Component {
         $closedBase = Ticket::with('customer')
             ->where('status', 'done');
 
+        if ($this->selectedStatusFilter === 'backlog') {
+            $openBase->where('status', 'backlog');
+            $closedBase->whereRaw('1 = 0');
+        } elseif ($this->selectedStatusFilter === 'in_progress') {
+            $openBase->where('status', 'in_progress');
+            $closedBase->whereRaw('1 = 0');
+        } elseif ($this->selectedStatusFilter === 'done') {
+            $openBase->whereRaw('1 = 0');
+        }
+
         $openBase = $this->applySearch($openBase);
         $closedBase = $this->applySearch($closedBase);
 
@@ -95,29 +121,52 @@ new class extends Component {
     </div>
 
     <div class="grid gap-4 md:grid-cols-4">
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <button
+            type="button"
+            wire:click="clearStatusFilter"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === '' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σύνολο Δελτίων</p>
             <p class="mt-2 text-3xl font-semibold">{{ $totalTickets }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('backlog')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'backlog' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σε Εκκρεμότητα</p>
             <p class="mt-2 text-3xl font-semibold">{{ $backlogCount }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('in_progress')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'in_progress' ? 'border-amber-300 bg-amber-50 ring-2 ring-amber-200 dark:border-amber-700 dark:bg-amber-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σε Εξέλιξη</p>
             <p class="mt-2 text-3xl font-semibold">{{ $inProgressCount }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('done')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'done' ? 'border-emerald-300 bg-emerald-50 ring-2 ring-emerald-200 dark:border-emerald-700 dark:bg-emerald-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Ολοκληρωμένα</p>
             <p class="mt-2 text-3xl font-semibold">{{ $doneCount }}</p>
-        </div>
+        </button>
     </div>
 
     <div class="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <input
             wire:model.live.debounce.300ms="search"
             type="text"
-            placeholder="Αναζήτηση με θέμα, όνομα πελάτη ή email..."
+            placeholder="Αναζήτηση με θέμα, αριθμό δελτίου, όνομα ή email..."
             class="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
         >
     </div>
@@ -145,11 +194,11 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ημ/νια Δημιουργιας</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -161,8 +210,8 @@ new class extends Component {
                                             <p class="font-medium">{{ $ticket->title }}</p>
 
                                             @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
-                                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
-                                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                                <span class="text-xs text-zinc-500">
+                                                    / {{ implode(' / ', $ticket->equipment_types) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -176,7 +225,7 @@ new class extends Component {
                                     <x-status-badge :status="$ticket->status" />
                                 </td>
                                 <td class="px-4 py-4 text-sm text-zinc-500">
-                                    {{ $ticket->created_at->format('d/m/Y H:i') }}
+                                    {{ $ticket->reference_number ?? '—' }}
                                 </td>
                                 <td class="px-4 py-4">
                                     <div class="flex justify-end gap-2">
@@ -230,12 +279,12 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Δημιουργια</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκληρωση</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκλήρωση</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -247,8 +296,8 @@ new class extends Component {
                                             <p class="font-medium">{{ $ticket->title }}</p>
 
                                             @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
-                                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
-                                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                                <span class="text-xs text-zinc-500" style="padding-left:10px;padding-top:2px">
+                                                     {{ implode(' / ', $ticket->equipment_types) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -262,7 +311,7 @@ new class extends Component {
                                     <x-status-badge :status="$ticket->status" />
                                 </td>
                                 <td class="px-4 py-4 text-sm text-zinc-500">
-                                    {{ $ticket->created_at->format('d/m/Y H:i') }}
+                                    {{ $ticket->reference_number ?? '—' }}
                                 </td>
                                 <td class="px-4 py-4 text-sm text-zinc-500">
                                     {{ $ticket->closed_at?->format('d/m/Y H:i') ?? '—' }}

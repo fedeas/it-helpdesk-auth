@@ -5,10 +5,16 @@ use Livewire\Component;
 
 new class extends Component {
     public string $searchReference = '';
+    public string $selectedStatusFilter = '';
 
-    public function updatedSearchReference(): void
+    public function toggleStatusFilter(string $status): void
     {
-        // μόνο για re-render
+        $this->selectedStatusFilter = $this->selectedStatusFilter === $status ? '' : $status;
+    }
+
+    public function clearStatusFilter(): void
+    {
+        $this->selectedStatusFilter = '';
     }
 
     public function with(): array
@@ -19,6 +25,10 @@ new class extends Component {
 
         if (trim($this->searchReference) !== '') {
             $recentTicketsQuery->where('reference_number', 'like', '%'.$this->searchReference.'%');
+        }
+
+        if ($this->selectedStatusFilter !== '') {
+            $recentTicketsQuery->where('status', $this->selectedStatusFilter);
         }
 
         return [
@@ -53,22 +63,45 @@ new class extends Component {
     </div>
 
     <div class="grid gap-4 md:grid-cols-4">
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <button
+            type="button"
+            wire:click="clearStatusFilter"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === '' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σύνολο</p>
             <p class="mt-2 text-3xl font-semibold">{{ $totalTickets }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('backlog')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'backlog' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σε Εκκρεμότητα</p>
             <p class="mt-2 text-3xl font-semibold">{{ $backlogCount }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('in_progress')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'in_progress' ? 'border-amber-300 bg-amber-50 ring-2 ring-amber-200 dark:border-amber-700 dark:bg-amber-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Σε Εξέλιξη</p>
             <p class="mt-2 text-3xl font-semibold">{{ $inProgressCount }}</p>
-        </div>
-        <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        </button>
+
+        <button
+            type="button"
+            wire:click="toggleStatusFilter('done')"
+            class="rounded-2xl border p-5 text-left shadow-sm transition
+                {{ $selectedStatusFilter === 'done' ? 'border-emerald-300 bg-emerald-50 ring-2 ring-emerald-200 dark:border-emerald-700 dark:bg-emerald-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
+        >
             <p class="text-sm text-zinc-500">Ολοκληρωμένα</p>
             <p class="mt-2 text-3xl font-semibold">{{ $doneCount }}</p>
-        </div>
+        </button>
     </div>
 
     <div class="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -76,12 +109,12 @@ new class extends Component {
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <h2 class="text-lg font-semibold whitespace-nowrap">Πρόσφατα Δελτία</h2>
 
-                <div class="w-52 md:w-52 lg:w-56 shrink-0">
+                <div class="w-full md:w-52 lg:w-56 shrink-0">
                     <input
                         wire:model.live.debounce.300ms="searchReference"
                         type="text"
                         placeholder="Αριθμός δελτίου..."
-                        class="w-52 rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
+                        class="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
                     >
                 </div>
             </div>
@@ -92,27 +125,30 @@ new class extends Component {
                 <div class="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                     <div class="min-w-0 flex-1 space-y-1">
                         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                            <p class="truncate font-medium">{{ $ticket->title }}</p>
+                            <p class="font-medium">{{ $ticket->title }}</p>
 
                             @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
-                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
-                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                <span class="text-xs text-zinc-500" style="padding-left:10px;padding-top:2px;">
+                                     {{ implode(' / ', $ticket->equipment_types) }}
                                 </span>
                             @endif
                         </div>
 
-                        <div class="flex flex-col gap-1 text-sm text-zinc-500">
-                            <span>
+                        <div class="text-sm text-zinc-500">
+                            <div>
                                 <span class="font-medium text-zinc-700 dark:text-zinc-300">Αρ. Δελτίου:</span>
                                 {{ $ticket->reference_number ?? '—' }}
-                            </span>
+                            </div>
 
-                            <span>
+                            <div class="my-1 border-t border-zinc-200 dark:border-zinc-700"></div>
+
+                            <div>
                                 <span class="font-medium text-zinc-700 dark:text-zinc-300">Δημιουργήθηκε:</span>
                                 {{ $ticket->created_at?->format('d/m/Y H:i') ?? '—' }}
-                            </span>
+                            </div>
                         </div>
                     </div>
+
                     <div class="flex items-center gap-2">
                         <x-status-badge :status="$ticket->status" />
 
