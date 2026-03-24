@@ -5,7 +5,6 @@ use Livewire\Component;
 
 new class extends Component {
     public Ticket $ticket;
-    public bool $showDeleteModal = false;
 
     public function mount(Ticket $ticket): void
     {
@@ -13,28 +12,6 @@ new class extends Component {
 
         $this->ticket = $ticket->load('updates.admin');
     }
-
-    public function confirmDelete(): void
-    {
-        $this->showDeleteModal = true;
-    }
-
-    public function cancelDelete(): void
-    {
-        $this->showDeleteModal = false;
-    }
-
-    public function deleteTicket(): mixed
-    {
-        abort_unless($this->ticket->customer_id === auth()->id(), 403);
-
-        $this->ticket->delete();
-
-        session()->flash('success', 'Το δελτίο διαγράφηκε επιτυχώς.');
-
-        return $this->redirect(route('customer.tickets.index'), navigate: true);
-    }
-
     public function back(): mixed
     {
         return $this->redirect(route('customer.dashboard'), navigate: true);
@@ -65,14 +42,6 @@ new class extends Component {
                 class="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-black-600 hover:bg-black-50 dark:border-black-800 dark:text-red-400 dark:hover:bg-red-950/20"
             >
                 Πίσω
-            </button>
-
-            <button
-                type="button"
-                wire:click="confirmDelete"
-                class="rounded-xl border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/20"
-            >
-                Διαγραφή
             </button>
         </div>
     </div>
@@ -214,35 +183,4 @@ new class extends Component {
             @endforelse
         </div>
     </div>
-
-    @if($showDeleteModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                <h2 class="text-lg font-semibold">Διαγραφή Δελτίου</h2>
-                <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">
-                    Αυτή η ενέργεια θα διαγράψει οριστικά το δελτίο από την ενεργή προβολή.
-                    Το δελτίο θα παραμείνει στη βάση δεδομένων ως soft deleted.
-                    Θέλετε σίγουρα να συνεχίσετε;
-                </p>
-
-                <div class="mt-6 flex justify-end gap-3">
-                    <button
-                        type="button"
-                        wire:click="cancelDelete"
-                        class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-700"
-                    >
-                        Όχι
-                    </button>
-
-                    <button
-                        type="button"
-                        wire:click="deleteTicket"
-                        class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                    >
-                        Ναι, διαγραφή
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endif
 </div>

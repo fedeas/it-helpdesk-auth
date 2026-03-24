@@ -4,45 +4,11 @@ use App\Models\Ticket;
 use Livewire\Component;
 
 new class extends Component {
-    public bool $showDeleteModal = false;
-    public ?int $ticketToDelete = null;
-
     public string $searchReference = '';
 
     public function updatedSearchReference(): void
     {
         // μόνο για re-render
-    }
-
-    public function confirmDelete(int $ticketId): void
-    {
-        $this->ticketToDelete = $ticketId;
-        $this->showDeleteModal = true;
-    }
-
-    public function cancelDelete(): void
-    {
-        $this->showDeleteModal = false;
-        $this->ticketToDelete = null;
-    }
-
-    public function deleteTicket(): mixed
-    {
-        if (! $this->ticketToDelete) {
-            return null;
-        }
-
-        $ticket = Ticket::where('customer_id', auth()->id())
-            ->findOrFail($this->ticketToDelete);
-
-        $ticket->delete();
-
-        $this->showDeleteModal = false;
-        $this->ticketToDelete = null;
-
-        session()->flash('success', 'Το δελτίο διαγράφηκε επιτυχώς.');
-
-        return null;
     }
 
     public function with(): array
@@ -125,20 +91,28 @@ new class extends Component {
             @forelse($recentTickets as $ticket)
                 <div class="flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                     <div class="min-w-0 flex-1 space-y-1">
-                        <p class="truncate font-medium">{{ $ticket->title }}</p>
+                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <p class="truncate font-medium">{{ $ticket->title }}</p>
 
-                        <div class="text-sm text-zinc-500">
-                            <div>
+                            @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
+                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
+                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="flex flex-col gap-1 text-sm text-zinc-500">
+                            <span>
                                 <span class="font-medium text-zinc-700 dark:text-zinc-300">Αρ. Δελτίου:</span>
                                 {{ $ticket->reference_number ?? '—' }}
-                            </div>
-                            <div>
+                            </span>
+
+                            <span>
                                 <span class="font-medium text-zinc-700 dark:text-zinc-300">Δημιουργήθηκε:</span>
                                 {{ $ticket->created_at?->format('d/m/Y H:i') ?? '—' }}
-                            </div>
+                            </span>
                         </div>
                     </div>
-
                     <div class="flex items-center gap-2">
                         <x-status-badge :status="$ticket->status" />
 
@@ -149,14 +123,6 @@ new class extends Component {
                         >
                             Προβολή
                         </a>
-
-                        <button
-                            type="button"
-                            wire:click="confirmDelete({{ $ticket->id }})"
-                            class="inline-flex items-center rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/20"
-                        >
-                            Διαγραφή
-                        </button>
                     </div>
                 </div>
             @empty
@@ -166,34 +132,4 @@ new class extends Component {
             @endforelse
         </div>
     </div>
-
-    @if($showDeleteModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                <h2 class="text-lg font-semibold">Διαγραφή Δελτίου</h2>
-                <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">
-                    Αυτή η ενέργεια είναι μόνιμη και θα αφαιρέσει το δελτίο από την ενεργή προβολή.
-                    Θέλετε να συνεχίσετε;
-                </p>
-
-                <div class="mt-6 flex justify-end gap-3">
-                    <button
-                        type="button"
-                        wire:click="cancelDelete"
-                        class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-700"
-                    >
-                        Όχι
-                    </button>
-
-                    <button
-                        type="button"
-                        wire:click="deleteTicket"
-                        class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                    >
-                        Ναι, διαγραφή
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endif
 </div>

@@ -11,9 +11,6 @@ new class extends Component {
     public string $openSort = 'created_desc';
     public string $closedSort = 'closed_desc';
 
-    public bool $showDeleteModal = false;
-    public ?int $ticketToDelete = null;
-
     public function updatingSearch(): void
     {
         $this->resetPage(pageName: 'openPage');
@@ -59,33 +56,6 @@ new class extends Component {
             'created_desc' => $query->orderBy('created_at', 'desc'),
             default => $query->orderBy('closed_at', 'desc'),
         };
-    }
-
-    public function confirmDelete(int $ticketId): void
-    {
-        $this->ticketToDelete = $ticketId;
-        $this->showDeleteModal = true;
-    }
-
-    public function cancelDelete(): void
-    {
-        $this->showDeleteModal = false;
-        $this->ticketToDelete = null;
-    }
-
-    public function deleteTicket(): void
-    {
-        if (! $this->ticketToDelete) {
-            return;
-        }
-
-        $ticket = Ticket::findOrFail($this->ticketToDelete);
-        $ticket->delete();
-
-        $this->showDeleteModal = false;
-        $this->ticketToDelete = null;
-
-        session()->flash('success', 'Το δελτίο διαγράφηκε επιτυχώς.');
     }
 
     public function with(): array
@@ -185,7 +155,19 @@ new class extends Component {
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
                         @forelse($openTickets as $ticket)
                             <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                                <td class="px-4 py-4 font-medium">{{ $ticket->title }}</td>
+                                <td class="px-4 py-4">
+                                    <div class="space-y-1">
+                                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                            <p class="font-medium">{{ $ticket->title }}</p>
+
+                                            @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
+                                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
+                                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="px-4 py-4 text-sm">
                                     {{ $ticket->customer->name }}<br>
                                     <span class="text-zinc-500">{{ $ticket->customer->email }}</span>
@@ -205,14 +187,6 @@ new class extends Component {
                                         >
                                             Διαχείριση
                                         </a>
-
-                                        <button
-                                            type="button"
-                                            wire:click="confirmDelete({{ $ticket->id }})"
-                                            class="inline-flex items-center rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/20"
-                                        >
-                                            Διαγραφή
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -267,7 +241,19 @@ new class extends Component {
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
                         @forelse($closedTickets as $ticket)
                             <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                                <td class="px-4 py-4 font-medium">{{ $ticket->title }}</td>
+                                <td class="px-4 py-4">
+                                    <div class="space-y-1">
+                                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                            <p class="font-medium">{{ $ticket->title }}</p>
+
+                                            @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
+                                                <span class="text-sm text-zinc-500" style="padding-left: 10px">
+                                                    {{ implode(' , ', $ticket->equipment_types) }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
                                 <td class="px-4 py-4 text-sm">
                                     {{ $ticket->customer->name }}<br>
                                     <span class="text-zinc-500">{{ $ticket->customer->email }}</span>
@@ -290,14 +276,6 @@ new class extends Component {
                                         >
                                             Προβολή
                                         </a>
-
-                                        <button
-                                            type="button"
-                                            wire:click="confirmDelete({{ $ticket->id }})"
-                                            class="inline-flex items-center rounded-lg border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/20"
-                                        >
-                                            Διαγραφή
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -315,35 +293,4 @@ new class extends Component {
 
         {{ $closedTickets->links() }}
     </section>
-
-    @if($showDeleteModal)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-                <h2 class="text-lg font-semibold">Διαγραφή Δελτίου</h2>
-                <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">
-                    Αυτή η ενέργεια θα αφαιρέσει το δελτίο από την ενεργή προβολή.
-                    Το δελτίο θα παραμείνει στη βάση ως soft deleted.
-                    Θέλετε να συνεχίσετε;
-                </p>
-
-                <div class="mt-6 flex justify-end gap-3">
-                    <button
-                        type="button"
-                        wire:click="cancelDelete"
-                        class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium dark:border-zinc-700"
-                    >
-                        Όχι
-                    </button>
-
-                    <button
-                        type="button"
-                        wire:click="deleteTicket"
-                        class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                    >
-                        Ναι, διαγραφή
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endif
 </div>
