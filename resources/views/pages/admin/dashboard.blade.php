@@ -194,11 +194,11 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτιου</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -210,8 +210,8 @@ new class extends Component {
                                             <p class="font-medium">{{ $ticket->title }}</p>
 
                                             @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
-                                                <span class="text-xs text-zinc-500">
-                                                    / {{ implode(' / ', $ticket->equipment_types) }}
+                                                <span class="text-xs text-zinc-500" style="padding-left:10px;padding-top:2px">
+                                                     {{ implode(' / ', $ticket->equipment_types) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -279,12 +279,12 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκλήρωση</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτιου</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκληρωση</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">

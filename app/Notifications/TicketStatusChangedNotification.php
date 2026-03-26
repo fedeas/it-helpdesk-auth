@@ -21,19 +21,18 @@ class TicketStatusChangedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return $this->newStatus === 'done' ? ['mail'] : [];
     }
 
     public function toMail(object $notifiable): MailMessage
     {
         $mail = (new MailMessage)
-            ->subject('Ενημέρωση Κατάστασης Δελτίου')
+            ->subject('Ολοκλήρωση Δελτίου Βλάβης')
             ->greeting('Γεια σας '.$notifiable->name.',')
-            ->line('Το δελτίο βλάβης σας ενημερώθηκε.')
+            ->line('Το δελτίο βλάβης σας έχει ολοκληρωθεί.')
             ->line('Αριθμός Δελτίου: '.($this->ticket->reference_number ?? '—'))
             ->line('Θέμα: '.$this->ticket->title)
-            ->line('Προηγούμενη κατάσταση: '.$this->statusLabel($this->oldStatus))
-            ->line('Νέα κατάσταση: '.$this->statusLabel($this->newStatus))
+            ->line('Κατάσταση: '.$this->statusLabel($this->newStatus))
             ->action('Προβολή Δελτίου', route('customer.tickets.show', $this->ticket));
 
         if ($this->note) {

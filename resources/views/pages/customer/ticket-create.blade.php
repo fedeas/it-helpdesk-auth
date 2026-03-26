@@ -59,6 +59,12 @@ new class extends Component {
 
         $ticket->load('customer');
 
+        // Email στον πελάτη
+        if ($ticket->customer) {
+            $ticket->customer->notify(new NewTicketCreatedNotification($ticket));
+        }
+
+        // Email στους admins
         $admins = User::where('role', 'admin')->get();
         Notification::send($admins, new NewTicketCreatedNotification($ticket));
 

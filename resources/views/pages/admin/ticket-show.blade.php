@@ -73,7 +73,7 @@ new class extends Component {
 
         $this->ticket->refresh()->load(['customer', 'updates.admin']);
 
-        if ($statusChanged) {
+        if ($statusChanged && $newStatus === 'done') {
             $this->ticket->customer->notify(
                 new TicketStatusChangedNotification(
                     $this->ticket,
@@ -81,10 +81,6 @@ new class extends Component {
                     $newStatus,
                     $hasNote ? $this->note : null
                 )
-            );
-        } elseif ($hasNote) {
-            $this->ticket->customer->notify(
-                new TicketNoteAddedNotification($this->ticket, $this->note)
             );
         }
 
