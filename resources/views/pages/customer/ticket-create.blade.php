@@ -2,6 +2,7 @@
 
 use App\Models\Ticket;
 use App\Models\User;
+use App\Notifications\CustomerTicketReceivedNotification;
 use App\Notifications\NewTicketCreatedNotification;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
@@ -81,6 +82,10 @@ new class extends Component {
 
         $admins = User::where('role', 'admin')->get();
         Notification::send($admins, new NewTicketCreatedNotification($ticket));
+
+        if ($ticket->customer && !empty($ticket->customer->email)) {
+            $ticket->customer->notify(new CustomerTicketReceivedNotification($ticket));
+        }
 
         session()->flash('success', 'Το δελτίο βλάβης καταχωρήθηκε επιτυχώς.');
 

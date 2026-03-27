@@ -2,6 +2,7 @@
     <div class="me-10 w-full pb-4 md:w-[220px]">
         <flux:navlist aria-label="Ρυθμίσεις">
             <flux:navlist.item :href="route('profile.edit')" wire:navigate>Προφίλ</flux:navlist.item>
+            <flux:navlist.item :href="route('security.edit')" wire:navigate>Ασφάλεια</flux:navlist.item>
             <flux:navlist.item :href="route('appearance.edit')" wire:navigate>Εμφάνιση</flux:navlist.item>
         </flux:navlist>
     </div>
