@@ -1,65 +1,85 @@
-<x-layouts.app :title="'Ασφάλεια Λογαριασμού'">
-    <x-settings.layout :heading="'Ασφάλεια'" :subheading="'Αλλάξτε τον κωδικό πρόσβασής σας'">
-        @if (session('status') === 'password-updated')
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                Ο κωδικός πρόσβασης ενημερώθηκε επιτυχώς.
-            </div>
-        @endif
+<?php
 
-        <form method="POST" action="{{ route('security.update') }}" class="space-y-6">
-            @csrf
-            @method('PUT')
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Livewire\Attributes\Title;
+use Livewire\Component;
 
-            <div>
-                <label for="current_password" class="mb-2 block text-sm font-medium">Τρέχων Κωδικός</label>
-                <input
-                    id="current_password"
-                    name="current_password"
-                    type="password"
-                    autocomplete="current-password"
-                    required
-                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                >
-                @error('current_password')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
+new #[Title('Ρυθμίσεις Ασφάλειας')] class extends Component {
+    public string $current_password = '';
+    public string $password = '';
+    public string $password_confirmation = '';
 
-            <div>
-                <label for="password" class="mb-2 block text-sm font-medium">Νέος Κωδικός</label>
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autocomplete="new-password"
-                    required
-                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                >
-                @error('password')
-                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
+    public function updatePassword(): void
+    {
+        $validated = $this->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'current_password.required' => 'Ο τρέχων κωδικός είναι υποχρεωτικός.',
+            'current_password.current_password' => 'Ο τρέχων κωδικός δεν είναι σωστός.',
+            'password.required' => 'Ο νέος κωδικός είναι υποχρεωτικός.',
+            'password.confirmed' => 'Η επιβεβαίωση κωδικού δεν ταιριάζει.',
+        ]);
 
-            <div>
-                <label for="password_confirmation" class="mb-2 block text-sm font-medium">Επιβεβαίωση Νέου Κωδικού</label>
-                <input
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    type="password"
-                    autocomplete="new-password"
-                    required
-                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                >
-            </div>
+        $user = Auth::user();
 
-            <div class="flex items-center justify-end">
-                <button
-                    type="submit"
-                    class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
-                >
-                    Αλλαγή Κωδικού
-                </button>
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $this->reset('current_password', 'password', 'password_confirmation');
+
+        $this->dispatch('password-updated');
+    }
+}; ?>
+
+<section class="w-full">
+    @include('partials.settings-heading')
+
+    <flux:heading class="sr-only">Ρυθμίσεις Ασφάλειας</flux:heading>
+
+    <x-pages::settings.layout :heading="'Ασφάλεια'" :subheading="'Αλλάξτε τον κωδικό πρόσβασής σας'">
+        <form wire:submit="updatePassword" class="my-6 w-full space-y-6">
+            <flux:input
+                wire:model="current_password"
+                label="Τρέχων Κωδικός"
+                type="password"
+                required
+                autocomplete="current-password"
+                viewable
+            />
+
+            <flux:input
+                wire:model="password"
+                label="Νέος Κωδικός"
+                type="password"
+                required
+                autocomplete="new-password"
+                viewable
+            />
+
+            <flux:input
+                wire:model="password_confirmation"
+                label="Επιβεβαίωση Νέου Κωδικού"
+                type="password"
+                required
+                autocomplete="new-password"
+                viewable
+            />
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center justify-end">
+                    <flux:button variant="primary" type="submit" class="w-full">
+                        Αλλαγή Κωδικού
+                    </flux:button>
+                </div>
+
+                <x-action-message class="me-3" on="password-updated">
+                    Ο κωδικός ενημερώθηκε.
+                </x-action-message>
             </div>
         </form>
-    </x-settings.layout>
-</x-layouts.app>
+    </x-pages::settings.layout>
+</section>
