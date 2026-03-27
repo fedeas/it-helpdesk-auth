@@ -1,10 +1,5 @@
 <x-layouts.app :title="'Ασφάλεια Λογαριασμού'">
-    <div class="mx-auto max-w-3xl space-y-6">
-        <div>
-            <h1 class="text-2xl font-semibold text-zinc-900 dark:text-white">Ασφάλεια Λογαριασμού</h1>
-            <p class="text-sm text-zinc-500">Αλλάξτε τον κωδικό πρόσβασής σας.</p>
-        </div>
-
+    <x-settings.layout :heading="'Ασφάλεια'" :subheading="'Αλλάξτε τον κωδικό πρόσβασής σας'">
         @if (session('status') === 'password-updated')
             <div
                 x-data="{ show: true }"
@@ -27,66 +22,60 @@
             </div>
         @endif
 
-        <div class="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <form method="POST" action="{{ route('password.update') }}" class="space-y-6">
-                @csrf
-                @method('PUT')
+        <form method="POST" action="{{ route('security.update') }}" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-                <div>
-                    <label for="current_password" class="mb-2 block text-sm font-medium">Τρέχων Κωδικός</label>
-                    <input
-                        id="current_password"
-                        name="current_password"
-                        type="password"
-                        autocomplete="current-password"
-                        class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                    >
-                    @error('current_password', 'updatePassword')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div>
+                <label for="current_password" class="mb-2 block text-sm font-medium">Τρέχων Κωδικός</label>
+                <input
+                    id="current_password"
+                    name="current_password"
+                    type="password"
+                    autocomplete="current-password"
+                    required
+                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                >
+                @error('current_password')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <div>
-                    <label for="password" class="mb-2 block text-sm font-medium">Νέος Κωδικός</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autocomplete="new-password"
-                        class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                    >
-                    @error('password', 'updatePassword')
-                        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div>
+                <label for="password" class="mb-2 block text-sm font-medium">Νέος Κωδικός</label>
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                >
+                @error('password')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
 
-                <div>
-                    <label for="password_confirmation" class="mb-2 block text-sm font-medium">Επιβεβαίωση Νέου Κωδικού</label>
-                    <input
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        type="password"
-                        autocomplete="new-password"
-                        class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
-                    >
-                </div>
+            <div>
+                <label for="password_confirmation" class="mb-2 block text-sm font-medium">Επιβεβαίωση Νέου Κωδικού</label>
+                <input
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    type="password"
+                    autocomplete="new-password"
+                    required
+                    class="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                >
+            </div>
 
-                <div class="flex items-center justify-end gap-3">
-                    <a
-                        href="{{ route('profile.edit') }}"
-                        class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:hover:bg-zinc-800"
-                    >
-                        Επιστροφή στο Προφίλ
-                    </a>
-
-                    <button
-                        type="submit"
-                        class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
-                    >
-                        Αλλαγή Κωδικού
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+            <div class="flex items-center justify-end">
+                <button
+                    type="submit"
+                    class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
+                >
+                    Αλλαγή Κωδικού
+                </button>
+            </div>
+        </form>
+    </x-settings.layout>
 </x-layouts.app>
