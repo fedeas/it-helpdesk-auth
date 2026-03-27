@@ -109,12 +109,48 @@ new class extends Component {
 ?>
 
 <div class="space-y-6">
-    @if (session()->has('success'))
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-300">
-            {{ session('success') }}
+   @if (session()->has('success'))
+    <div
+        x-data="{ show: true }"
+        x-show="show"
+        x-transition
+        x-init="setTimeout(() => show = false, 3500)"
+        class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-xl dark:border-emerald-900 dark:bg-emerald-900/90 dark:text-emerald-300"
+    >
+        <div class="flex items-start justify-between gap-3">
+            <span>{{ session('success') }}</span>
+
+            <button
+                type="button"
+                @click="show = false"
+                class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+            >
+                ✕
+            </button>
+        </div>
+    </div>
+    @endif
+    @if (session()->has('error'))
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition
+            x-init="setTimeout(() => show = false, 4500)"
+            class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-xl dark:border-red-900 dark:bg-red-900/90 dark:text-red-300"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <span>{{ session('error') }}</span>
+
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                >
+                    ✕
+                </button>
+            </div>
         </div>
     @endif
-
     <div>
         <h1 class="text-2xl font-semibold">Πίνακας Διαχείρισης</h1>
         <p class="text-sm text-zinc-500">Παρακολούθηση ενεργών και ολοκληρωμένων δελτίων.</p>

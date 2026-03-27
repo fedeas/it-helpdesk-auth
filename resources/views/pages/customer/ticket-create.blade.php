@@ -32,7 +32,7 @@ new class extends Component {
             'installation_location' => ['nullable', 'string', 'max:255'],
             'vehicle_registration' => ['nullable', 'string', 'max:255'],
             'report_channel' => ['required', 'in:email,fax,phone'],
-            'equipment_types' => ['nullable', 'array'],
+            'equipment_types' => ['nullable', 'array', 'min:1'],
             'title' => ['required', 'string', 'max:255'],
             'fault_description' => ['required', 'string', 'min:5'],
             'recorded_by' => ['required', 'string', 'max:1000'],
@@ -78,11 +78,47 @@ new class extends Component {
 
 <div class="mx-auto max-w-5xl space-y-6">
     @if (session()->has('success'))
-        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-300">
-            {{ session('success') }}
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition
+            x-init="setTimeout(() => show = false, 3500)"
+            class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-xl dark:border-emerald-900 dark:bg-emerald-900/90 dark:text-emerald-300"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <span>{{ session('success') }}</span>
+
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                >
+                    ✕
+                </button>
+            </div>
         </div>
     @endif
+    @if (session()->has('error'))
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition
+            x-init="setTimeout(() => show = false, 4500)"
+            class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-xl dark:border-red-900 dark:bg-red-900/90 dark:text-red-300"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <span>{{ session('error') }}</span>
 
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                >
+                    ✕
+                </button>
+            </div>
+        </div>
+    @endif
     <div>
         <h1 class="text-2xl font-semibold">Καταχώρηση Δελτίου Βλάβης</h1>
         <p class="text-sm text-zinc-500">Συμπληρώστε τα στοιχεία του δελτίου σύμφωνα με τη βλάβη που αναφέρεται.</p>
@@ -208,7 +244,7 @@ new class extends Component {
                 Ακύρωση
             </a>
 
-            <button type="submit" class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-white dark:text-zinc-900">
+            <button type="submit" class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 hover:scale-[1.02] hover:shadow-md active:scale-[0.98] active:shadow-sm dark:bg-white dark:text-zinc-900">
                 Καταχώρηση Δελτίου
             </button>
         </div>
