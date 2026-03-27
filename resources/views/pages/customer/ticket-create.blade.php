@@ -105,7 +105,7 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
@@ -293,14 +293,14 @@ new class extends Component {
             <a
                 href="{{ route('customer.tickets.index') }}"
                 wire:navigate
-                class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium transition duration-150 hover:scale-[1.02] hover:bg-zinc-50 hover:shadow-sm active:scale-[0.98] dark:border-zinc-700 dark:hover:bg-zinc-800"
+                class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:hover:bg-zinc-800"
             >
                 Ακύρωση
             </a>
 
             <button
                 type="submit"
-                class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 hover:scale-[1.02] hover:shadow-md active:scale-[0.98] active:shadow-sm dark:bg-white dark:text-zinc-900"
+                class="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
             >
                 Καταχώρηση Δελτίου
             </button>

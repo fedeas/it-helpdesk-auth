@@ -58,7 +58,7 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
@@ -80,7 +80,7 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
                 >
                     ✕
                 </button>
@@ -165,7 +165,7 @@ new class extends Component {
                                 <a
                                     href="{{ route('admin.tickets.show', $ticket) }}"
                                     wire:navigate
-                                    class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 hover:scale-[1.02] hover:bg-zinc-100 active:scale-[0.98] dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                                    class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                                 >
                                     Διαχείριση
                                 </a>

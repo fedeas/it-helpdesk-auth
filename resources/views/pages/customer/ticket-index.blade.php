@@ -50,13 +50,14 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
+
     @if (session()->has('error'))
         <div
             x-data="{ show: true }"
@@ -71,35 +72,44 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
-    
+
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
             <h1 class="text-2xl font-semibold">Τα Δελτία Μου</h1>
             <p class="text-sm text-zinc-500">Παρακολούθηση όλων των δελτίων βλάβης.</p>
         </div>
 
-        <a href="{{ route('customer.tickets.create') }}" wire:navigate
-           class="inline-flex items-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:opacity-90 dark:bg-white dark:text-zinc-900">
+        <a
+            href="{{ route('customer.tickets.create') }}"
+            wire:navigate
+            class="inline-flex items-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
+        >
             Νέο Δελτίο
         </a>
     </div>
 
     <div class="grid gap-4 md:grid-cols-3">
         <div class="md:col-span-2">
-            <input wire:model.live.debounce.300ms="search" type="text" placeholder="Αναζήτηση με θέμα..."
-                   class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900">
+            <input
+                wire:model.live.debounce.300ms="search"
+                type="text"
+                placeholder="Αναζήτηση με θέμα..."
+                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
+            >
         </div>
 
         <div>
-            <select wire:model.live="status"
-                    class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900">
+            <select
+                wire:model.live="status"
+                class="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-900"
+            >
                 <option value="">Όλες οι Καταστάσεις</option>
                 <option value="backlog">Σε Εκκρεμότητα</option>
                 <option value="in_progress">Σε Εξέλιξη</option>
@@ -112,10 +122,10 @@ new class extends Component {
         <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
             <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                 <tr>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ωρα Αναγγελιας</th>
-                    <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ώρα Αναγγελίας</th>
+                    <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -129,7 +139,7 @@ new class extends Component {
                                 <a
                                     href="{{ route('customer.tickets.show', $ticket) }}"
                                     wire:navigate
-                                    class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                                    class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                                 >
                                     Προβολή
                                 </a>

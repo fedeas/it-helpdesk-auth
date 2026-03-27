@@ -14,7 +14,6 @@ new class extends Component {
     public string $resolved_by = '';
     public string $internal_notes = '';
 
-
     public function mount(Ticket $ticket): void
     {
         $this->ticket = $ticket->load(['customer', 'updates.admin']);
@@ -40,7 +39,13 @@ new class extends Component {
         $statusChanged = $oldStatus !== $newStatus;
         $hasNote = trim($this->note) !== '';
 
-        if (! $statusChanged && ! $hasNote && trim($this->resolution_action) === trim((string) $this->ticket->resolution_action) && trim($this->resolved_by) === trim((string) $this->ticket->resolved_by) && trim($this->internal_notes) === trim((string) $this->ticket->internal_notes)) {
+        if (
+            ! $statusChanged &&
+            ! $hasNote &&
+            trim($this->resolution_action) === trim((string) $this->ticket->resolution_action) &&
+            trim($this->resolved_by) === trim((string) $this->ticket->resolved_by) &&
+            trim($this->internal_notes) === trim((string) $this->ticket->internal_notes)
+        ) {
             session()->flash('error', 'Δεν έγινε καμία αλλαγή.');
             return;
         }
@@ -84,6 +89,12 @@ new class extends Component {
             );
         }
 
+        if ($hasNote) {
+            $this->ticket->customer->notify(
+                new TicketNoteAddedNotification($this->ticket, $this->note)
+            );
+        }
+
         $this->note = '';
 
         session()->flash('success', 'Το δελτίο ενημερώθηκε επιτυχώς.');
@@ -107,7 +118,7 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
@@ -129,7 +140,7 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
                 >
                     ✕
                 </button>
@@ -323,7 +334,10 @@ new class extends Component {
                         @error('internal_notes') <p class="mt-1 text-sm text-red-500">{{ $message }}</p> @enderror
                     </div>
 
-                    <button type="submit" class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white dark:bg-white dark:text-zinc-900">
+                    <button
+                        type="submit"
+                        class="w-full rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
+                    >
                         Αποθήκευση Ενημέρωσης
                     </button>
                 </div>
@@ -334,7 +348,7 @@ new class extends Component {
 
                 <dl class="space-y-3 text-sm">
                     <div class="grid grid-cols-2 gap-4">
-                        <dt class="text-zinc-500">Ημ/νία Αποκατάστασης</dt>
+                        <dt class="text-zinc-500">Ημερομηνία Αποκατάστασης</dt>
                         <dd>{{ $ticket->resolved_at?->format('d/m/Y H:i') ?: '—' }}</dd>
                     </div>
 
@@ -345,7 +359,16 @@ new class extends Component {
 
                     <div>
                         <dt class="mb-2 text-zinc-500">Ενέργεια Αποκατάστασης</dt>
-                        <dd class="whitespace-pre-line">{{ $ticket->resolution_action ?: '—' }}</dd>
+                        <dd class="whitespace-pre-line text-zinc-700 dark:text-zinc-300">
+                            {{ $ticket->resolution_action ?: '—' }}
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt class="mb-2 text-zinc-500">Εσωτερικές Σημειώσεις</dt>
+                        <dd class="whitespace-pre-line text-zinc-700 dark:text-zinc-300">
+                            {{ $ticket->internal_notes ?: '—' }}
+                        </dd>
                     </div>
                 </dl>
             </div>

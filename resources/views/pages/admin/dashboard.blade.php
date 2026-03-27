@@ -109,27 +109,28 @@ new class extends Component {
 ?>
 
 <div class="space-y-6">
-   @if (session()->has('success'))
-    <div
-        x-data="{ show: true }"
-        x-show="show"
-        x-transition
-        x-init="setTimeout(() => show = false, 3500)"
-        class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-xl dark:border-emerald-900 dark:bg-emerald-900/90 dark:text-emerald-300"
-    >
-        <div class="flex items-start justify-between gap-3">
-            <span>{{ session('success') }}</span>
+    @if (session()->has('success'))
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition
+            x-init="setTimeout(() => show = false, 3500)"
+            class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-xl dark:border-emerald-900 dark:bg-emerald-900/90 dark:text-emerald-300"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <span>{{ session('success') }}</span>
 
-            <button
-                type="button"
-                @click="show = false"
-                class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
-            >
-                ✕
-            </button>
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
+                >
+                    ✕
+                </button>
+            </div>
         </div>
-    </div>
     @endif
+
     @if (session()->has('error'))
         <div
             x-data="{ show: true }"
@@ -144,13 +145,14 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
+
     <div>
         <h1 class="text-2xl font-semibold">Πίνακας Διαχείρισης</h1>
         <p class="text-sm text-zinc-500">Παρακολούθηση ενεργών και ολοκληρωμένων δελτίων.</p>
@@ -160,7 +162,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="clearStatusFilter"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === '' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σύνολο Δελτίων</p>
@@ -170,7 +172,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('backlog')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'backlog' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σε Εκκρεμότητα</p>
@@ -180,7 +182,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('in_progress')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'in_progress' ? 'border-amber-300 bg-amber-50 ring-2 ring-amber-200 dark:border-amber-700 dark:bg-amber-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σε Εξέλιξη</p>
@@ -190,7 +192,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('done')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'done' ? 'border-emerald-300 bg-emerald-50 ring-2 ring-emerald-200 dark:border-emerald-700 dark:bg-emerald-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Ολοκληρωμένα</p>
@@ -230,11 +232,11 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτιου</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -268,7 +270,7 @@ new class extends Component {
                                         <a
                                             href="{{ route('admin.tickets.show', $ticket) }}"
                                             wire:navigate
-                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                                         >
                                             Διαχείριση
                                         </a>
@@ -315,12 +317,12 @@ new class extends Component {
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                     <thead class="bg-zinc-50 dark:bg-zinc-800/50">
                         <tr>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θεμα</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελατης</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατασταση</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτιου</th>
-                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκληρωση</th>
-                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενεργειες</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Θέμα</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Πελάτης</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Κατάσταση</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Αρ. Δελτίου</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Ολοκλήρωση</th>
+                            <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-zinc-500">Ενέργειες</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -333,7 +335,7 @@ new class extends Component {
 
                                             @if(!empty($ticket->equipment_types) && is_array($ticket->equipment_types))
                                                 <span class="text-xs text-zinc-500" style="padding-left:10px;padding-top:2px">
-                                                     {{ implode(' / ', $ticket->equipment_types) }}
+                                                    {{ implode(' / ', $ticket->equipment_types) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -357,9 +359,9 @@ new class extends Component {
                                         <a
                                             href="{{ route('admin.tickets.show', $ticket) }}"
                                             wire:navigate
-                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                                         >
-                                            Προβολή
+                                            Διαχείριση
                                         </a>
                                     </div>
                                 </td>
@@ -367,7 +369,7 @@ new class extends Component {
                         @empty
                             <tr>
                                 <td colspan="6" class="px-4 py-10 text-center text-sm text-zinc-500">
-                                    Δεν βρέθηκαν ολοκληρωμένα δελτία.
+                                    Δεν βρέθηκαν κλειστά δελτία.
                                 </td>
                             </tr>
                         @endforelse

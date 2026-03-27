@@ -12,6 +12,7 @@ new class extends Component {
 
         $this->ticket = $ticket->load('updates.admin');
     }
+
     public function back(): mixed
     {
         return $this->redirect(route('customer.dashboard'), navigate: true);
@@ -35,13 +36,14 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
+
     @if (session()->has('error'))
         <div
             x-data="{ show: true }"
@@ -56,14 +58,14 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-red-700 hover:opacity-70 dark:text-red-300"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
-    
+
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
             <h1 class="text-2xl font-semibold">Δελτίο Βλάβης</h1>
@@ -76,7 +78,7 @@ new class extends Component {
             <button
                 type="button"
                 wire:click="back"
-                class="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-black-600 hover:bg-black-50 dark:border-black-800 dark:text-red-400 dark:hover:bg-red-950/20"
+                class="rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
             >
                 Πίσω
             </button>
@@ -125,7 +127,7 @@ new class extends Component {
                             @case('email') Ηλεκτρονικό Ταχυδρομείο @break
                             @case('fax') Τηλεομοιοτυπία (fax) @break
                             @case('phone') Τηλέφωνο @break
-                            @default —
+                            @default — 
                         @endswitch
                     </dd>
                 </div>

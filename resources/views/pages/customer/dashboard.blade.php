@@ -58,42 +58,47 @@ new class extends Component {
                 <button
                     type="button"
                     @click="show = false"
-                    class="text-emerald-700 hover:opacity-70 dark:text-emerald-300"
+                    class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
                 >
                     ✕
                 </button>
             </div>
         </div>
     @endif
-    @if (session()->has('error'))
-            <div
-                x-data="{ show: true }"
-                x-show="show"
-                x-transition
-                x-init="setTimeout(() => show = false, 4500)"
-                class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-xl dark:border-red-900 dark:bg-red-900/90 dark:text-red-300"
-            >
-                <div class="flex items-start justify-between gap-3">
-                    <span>{{ session('error') }}</span>
 
-                    <button
-                        type="button"
-                        @click="show = false"
-                        class="text-red-700 hover:opacity-70 dark:text-red-300"
-                    >
-                        ✕
-                    </button>
-                </div>
+    @if (session()->has('error'))
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition
+            x-init="setTimeout(() => show = false, 4500)"
+            class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-xl dark:border-red-900 dark:bg-red-900/90 dark:text-red-300"
+        >
+            <div class="flex items-start justify-between gap-3">
+                <span>{{ session('error') }}</span>
+
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="text-red-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-red-300"
+                >
+                    ✕
+                </button>
             </div>
+        </div>
     @endif
+
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-semibold text-zinc-900 dark:text-white">Πίνακας Χρήστη</h1>
             <p class="text-sm text-zinc-500">Διαχείριση δελτίων βλάβης.</p>
         </div>
 
-        <a href="{{ route('customer.tickets.create') }}" wire:navigate
-           class="inline-flex items-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90 dark:bg-white dark:text-zinc-900">
+        <a
+            href="{{ route('customer.tickets.create') }}"
+            wire:navigate
+            class="inline-flex items-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-150 ease-out transform hover:scale-[1.03] hover:shadow-lg hover:brightness-110 active:scale-[0.95] active:shadow-sm dark:bg-white dark:text-zinc-900"
+        >
             Νέο Δελτίο
         </a>
     </div>
@@ -102,7 +107,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="clearStatusFilter"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === '' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σύνολο</p>
@@ -112,7 +117,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('backlog')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'backlog' ? 'border-zinc-400 bg-zinc-100 ring-2 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-800' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σε Εκκρεμότητα</p>
@@ -122,7 +127,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('in_progress')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'in_progress' ? 'border-amber-300 bg-amber-50 ring-2 ring-amber-200 dark:border-amber-700 dark:bg-amber-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Σε Εξέλιξη</p>
@@ -132,7 +137,7 @@ new class extends Component {
         <button
             type="button"
             wire:click="toggleStatusFilter('done')"
-            class="rounded-2xl border p-5 text-left shadow-sm transition
+            class="rounded-2xl border p-5 text-left shadow-sm transition duration-150 ease-out transform hover:scale-[1.02] hover:shadow-md active:scale-[0.97] active:shadow-sm
                 {{ $selectedStatusFilter === 'done' ? 'border-emerald-300 bg-emerald-50 ring-2 ring-emerald-200 dark:border-emerald-700 dark:bg-emerald-900/20' : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900' }}"
         >
             <p class="text-sm text-zinc-500">Ολοκληρωμένα</p>
@@ -191,7 +196,7 @@ new class extends Component {
                         <a
                             href="{{ route('customer.tickets.show', $ticket) }}"
                             wire:navigate
-                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                            class="inline-flex items-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 transition duration-150 ease-out transform hover:scale-[1.03] hover:bg-zinc-100 hover:shadow-md active:scale-[0.95] active:shadow-sm dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
                         >
                             Προβολή
                         </a>
