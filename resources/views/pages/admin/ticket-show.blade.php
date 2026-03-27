@@ -89,12 +89,6 @@ new class extends Component {
             );
         }
 
-        if ($hasNote) {
-            $this->ticket->customer->notify(
-                new TicketNoteAddedNotification($this->ticket, $this->note)
-            );
-        }
-
         $this->note = '';
 
         session()->flash('success', 'Το δελτίο ενημερώθηκε επιτυχώς.');
