@@ -1,28 +1,12 @@
 <x-layouts.app :title="'Ασφάλεια Λογαριασμού'">
     <x-settings.layout :heading="'Ασφάλεια'" :subheading="'Αλλάξτε τον κωδικό πρόσβασής σας'">
         @if (session('status') === 'password-updated')
-            <div
-                x-data="{ show: true }"
-                x-show="show"
-                x-transition
-                x-init="setTimeout(() => show = false, 3500)"
-                class="fixed right-4 top-4 z-[9999] w-full max-w-md rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 shadow-xl dark:border-emerald-900 dark:bg-emerald-900/90 dark:text-emerald-300"
-            >
-                <div class="flex items-start justify-between gap-3">
-                    <span>Ο κωδικός πρόσβασης ενημερώθηκε επιτυχώς.</span>
-
-                    <button
-                        type="button"
-                        @click="show = false"
-                        class="text-emerald-700 transition duration-150 ease-out transform hover:scale-125 hover:opacity-80 active:scale-90 dark:text-emerald-300"
-                    >
-                        ✕
-                    </button>
-                </div>
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                Ο κωδικός πρόσβασης ενημερώθηκε επιτυχώς.
             </div>
         @endif
 
-        <form method="POST" action="{{ route('password.update') }}" class="space-y-6">
+        <form method="POST" action="{{ route('security.update') }}" class="space-y-6">
             @csrf
             @method('PUT')
 
